@@ -6,9 +6,9 @@
 <title>开口 1024 · 三个开源的 AI 口语陪练</title>
 <style>
   :root{
-    --bg:#fafafa; --card:#ffffff; --ink:#1a1a1a; --sub:#6b7280; --line:#e8eaee;
-    --accent:#2563eb; --accent-soft:#eef3ff; --mono:'SF Mono',ui-monospace,Menlo,Consolas,monospace;
-    --amber:#b45309; --amber-soft:#fff8e6;
+    --bg:#fafaf9; --card:#ffffff; --ink:#1a1a1a; --sub:#6b7280; --line:#e8e6e1;
+    --accent:#1d6ae5; --accent-soft:#eaf1fd; --mono:'SF Mono',ui-monospace,Menlo,Consolas,monospace;
+    --amber:#b04a35; --amber-soft:#fff7e8; --gold:#d9a441; --paper:#e8e2d4; --inkblack:#14161c;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
@@ -63,14 +63,14 @@
   .app .links a{font-size:13.5px;font-weight:600;border:1px solid var(--line);border-radius:8px;padding:5px 14px;background:#fff;}
   .app .links a:hover{border-color:#c9d4e8;}
 
-  .prompt-card{font-family:var(--mono);font-size:14.5px;line-height:1.9;background:#0f1722;color:#dbe4f0;border-radius:12px;padding:20px 24px;margin-top:16px;white-space:pre-wrap;}
-  .prompt-card .who{color:#7fb0ff;font-weight:700;}
+  .prompt-card{font-family:var(--mono);font-size:14.5px;line-height:1.9;background:#14161c;color:#e8e2d4;border-radius:12px;padding:20px 24px;margin-top:16px;white-space:pre-wrap;}
+  .prompt-card .who{color:#d9a441;font-weight:700;}
   .prompt-note{font-size:14px;color:var(--sub);margin-top:10px;}
 
-  .dark{background:#0f1722;border-radius:16px;padding:26px 30px;margin-top:22px;display:flex;gap:34px;flex-wrap:wrap;}
-  .dark .fi{color:#c8d2e0;font-size:15px;line-height:1.8;flex:1;min-width:240px;}
+  .dark{background:#14161c;border-radius:16px;padding:26px 30px;margin-top:22px;display:flex;gap:34px;flex-wrap:wrap;}
+  .dark .fi{color:#b8b2a4;font-size:15px;line-height:1.8;flex:1;min-width:240px;}
   .dark .fi b{color:#fff;display:block;font-size:16px;margin-bottom:4px;}
-  .dark .fi .m{font-family:var(--mono);font-size:12px;color:#7fb0ff;letter-spacing:1px;}
+  .dark .fi .m{font-family:var(--mono);font-size:12px;color:#d9a441;letter-spacing:1px;}
 
   .repos{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px;}
   .repo{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;}
@@ -130,15 +130,15 @@
     <svg viewBox="0 0 980 96" style="width:100%;display:block;" xmlns="http://www.w3.org/2000/svg">
       <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#9aa3b2"/></marker></defs>
       <rect x="0" y="14" width="270" height="68" rx="12" fill="#fff" stroke="#e8eaee"/>
-      <text x="20" y="42" font-size="15" font-weight="700" fill="#2563eb">场景选择</text>
+      <text x="20" y="42" font-size="15" font-weight="700" fill="#1d6ae5">场景选择</text>
       <text x="20" y="66" font-size="12.5" fill="#5b6472">日常 / 面试 / 汇报 / 朝代·体裁·韵部</text>
       <line x1="274" y1="48" x2="316" y2="48" stroke="#9aa3b2" stroke-width="1.6" marker-end="url(#ar)"/>
       <rect x="322" y="14" width="350" height="68" rx="12" fill="#fff" stroke="#e8eaee"/>
-      <text x="342" y="42" font-size="15" font-weight="700" fill="#2563eb">出题助手 · LLM</text>
+      <text x="342" y="42" font-size="15" font-weight="700" fill="#1d6ae5">出题助手 · LLM</text>
       <text x="342" y="66" font-size="12.5" fill="#5b6472">「只输出 JSON 数组」· 离线题库兜底</text>
       <line x1="676" y1="48" x2="718" y2="48" stroke="#9aa3b2" stroke-width="1.6" marker-end="url(#ar)"/>
       <rect x="724" y="14" width="256" height="68" rx="12" fill="#fff" stroke="#e8eaee"/>
-      <text x="744" y="42" font-size="15" font-weight="700" fill="#2563eb">专属题库</text>
+      <text x="744" y="42" font-size="15" font-weight="700" fill="#1d6ae5">专属题库</text>
       <text x="744" y="66" font-size="12.5" fill="#5b6472">题目 + 注音 + 韵脚标注</text>
     </svg>
 
@@ -146,7 +146,7 @@
     <svg viewBox="0 0 980 210" style="width:100%;display:block;" xmlns="http://www.w3.org/2000/svg">
       <g font-family="-apple-system,'PingFang SC',sans-serif">
         <rect x="0" y="30" width="168" height="150" rx="12" fill="#fff" stroke="#e8eaee"/>
-        <circle cx="22" cy="20" r="13" fill="#2563eb"/><text x="22" y="25" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">1</text>
+        <circle cx="22" cy="20" r="13" fill="#1d6ae5"/><text x="22" y="25" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">1</text>
         <text x="42" y="26" font-size="16" font-weight="800" fill="#1a1a1a">开口说话</text>
         <text x="16" y="66" font-size="12.5" fill="#3d4654">· 一个按钮按住就录</text>
         <text x="16" y="92" font-size="12.5" fill="#3d4654">· 波形实时渲染</text>
@@ -155,7 +155,7 @@
         <line x1="172" y1="105" x2="210" y2="105" stroke="#9aa3b2" stroke-width="1.6" marker-end="url(#ar)"/>
 
         <rect x="216" y="30" width="180" height="150" rx="12" fill="#fff" stroke="#e8eaee"/>
-        <circle cx="238" cy="20" r="13" fill="#2563eb"/><text x="238" y="25" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">2</text>
+        <circle cx="238" cy="20" r="13" fill="#1d6ae5"/><text x="238" y="25" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">2</text>
         <text x="258" y="26" font-size="16" font-weight="800" fill="#1a1a1a">本地声学分析</text>
         <text x="232" y="66" font-size="12.5" fill="#3d4654">· 音量 / 能量稳定性</text>
         <text x="232" y="92" font-size="12.5" fill="#3d4654">· 静音检测 · 停顿统计</text>
@@ -165,7 +165,7 @@
         <line x1="400" y1="105" x2="438" y2="105" stroke="#9aa3b2" stroke-width="1.6" marker-end="url(#ar)"/>
 
         <rect x="444" y="30" width="176" height="150" rx="12" fill="#fff" stroke="#e8eaee"/>
-        <circle cx="466" cy="20" r="13" fill="#2563eb"/><text x="466" y="25" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">3</text>
+        <circle cx="466" cy="20" r="13" fill="#1d6ae5"/><text x="466" y="25" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">3</text>
         <text x="486" y="26" font-size="16" font-weight="800" fill="#1a1a1a">双通道转写</text>
         <text x="460" y="66" font-size="12.5" fill="#3d4654">A：Web Speech API（优先）</text>
         <text x="460" y="92" font-size="12.5" fill="#3d4654">B：讯飞实时转写（兜底）</text>
@@ -175,18 +175,18 @@
         <line x1="624" y1="105" x2="662" y2="105" stroke="#9aa3b2" stroke-width="1.6" marker-end="url(#ar)"/>
 
         <rect x="668" y="30" width="150" height="150" rx="12" fill="#fff" stroke="#e8eaee"/>
-        <circle cx="690" cy="20" r="13" fill="#2563eb"/><text x="690" y="25" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">4</text>
+        <circle cx="690" cy="20" r="13" fill="#1d6ae5"/><text x="690" y="25" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">4</text>
         <text x="710" y="26" font-size="16" font-weight="800" fill="#1a1a1a">双模式评分</text>
         <text x="684" y="66" font-size="12.5" fill="#3d4654">离线：声学规则六维分</text>
         <text x="684" y="92" font-size="12.5" fill="#3d4654">AI：评测专家 · JSON</text>
         <text x="684" y="118" font-size="12.5" fill="#3d4654">逐字比对：漏读标红</text>
-        <rect x="684" y="138" width="86" height="24" rx="12" fill="#fff8e6" stroke="#f2e2b3"/>
-        <text x="727" y="154" font-size="11.5" fill="#b45309" text-anchor="middle">精确练习法</text>
+        <rect x="684" y="138" width="86" height="24" rx="12" fill="#fff7e8" stroke="#f0d6c8"/>
+        <text x="727" y="154" font-size="11.5" fill="#b04a35" text-anchor="middle">精确练习法</text>
 
         <line x1="822" y1="105" x2="860" y2="105" stroke="#9aa3b2" stroke-width="1.6" marker-end="url(#ar)"/>
 
         <rect x="866" y="30" width="114" height="150" rx="12" fill="#fff" stroke="#e8eaee"/>
-        <circle cx="888" cy="20" r="13" fill="#2563eb"/><text x="888" y="25" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">5</text>
+        <circle cx="888" cy="20" r="13" fill="#1d6ae5"/><text x="888" y="25" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">5</text>
         <text x="908" y="26" font-size="16" font-weight="800" fill="#1a1a1a">本地沉淀</text>
         <text x="882" y="66" font-size="12.5" fill="#3d4654">· 进步曲线</text>
         <text x="882" y="92" font-size="12.5" fill="#3d4654">· 连续打卡</text>

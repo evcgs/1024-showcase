@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>开口 1024 · 三个开源的 AI 口语陪练</title>
+<style>
+  :root{
+    --bg:#fafafa; --card:#ffffff; --ink:#1a1a1a; --sub:#6b7280; --line:#e8eaee;
+    --accent:#2563eb; --accent-soft:#eef3ff; --mono:'SF Mono',ui-monospace,Menlo,Consolas,monospace;
+    --amber:#b45309; --amber-soft:#fff8e6;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.8;-webkit-font-smoothing:antialiased;}
+  a{color:var(--accent);text-decoration:none;}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 24px;}
+  nav{position:sticky;top:0;z-index:9;background:rgba(250,250,250,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  nav .wrap{display:flex;align-items:center;gap:28px;height:58px;}
+  .logo{font-weight:800;font-size:17px;letter-spacing:.5px;}
+  .logo span{color:var(--accent);}
+  nav a.n{font-size:14px;color:var(--sub);}
+  nav a.n:hover{color:var(--ink);}
+  .spacer{flex:1;}
+  .badge{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;color:var(--accent);background:var(--accent-soft);border:1px solid #d6e2ff;border-radius:99px;padding:2px 12px;font-weight:600;}
+
+  header{padding:84px 0 40px;text-align:center;}
+  header h1{font-size:46px;line-height:1.35;font-weight:800;letter-spacing:.5px;}
+  header h1 em{font-style:italic;color:var(--accent);}
+  header .tagline{font-size:19px;color:var(--sub);margin-top:18px;}
+  header .tagline b{color:var(--ink);}
+  .ctas{margin-top:30px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  .btn{display:inline-block;font-size:15px;font-weight:600;border-radius:10px;padding:10px 22px;border:1px solid var(--line);background:#fff;color:var(--ink);transition:.15s;}
+  .btn:hover{border-color:#c9d4e8;transform:translateY(-1px);}
+  .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .btn.primary:hover{background:#000;}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:44px 0 8px;}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 10px;text-align:center;}
+  .stat .v{font-family:var(--mono);font-size:30px;font-weight:700;color:var(--accent);}
+  .stat .k{font-size:13.5px;color:var(--sub);margin-top:2px;}
+
+  section{padding:64px 0 8px;}
+  .secno{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:700;letter-spacing:2px;}
+  section h2{font-size:29px;font-weight:800;margin:6px 0 10px;}
+  section h2 em{font-style:italic;color:var(--accent);}
+  section .lead{font-size:16px;color:var(--sub);max-width:760px;}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;margin-top:22px;box-shadow:0 1px 6px rgba(20,40,80,.04);}
+
+  .apps{display:flex;flex-direction:column;gap:26px;margin-top:22px;}
+  .app{display:grid;grid-template-columns:1.25fr 1fr;gap:26px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;align-items:center;box-shadow:0 1px 6px rgba(20,40,80,.04);}
+  .app:nth-child(even){grid-template-columns:1fr 1.25fr;}
+  .app:nth-child(even) .shot{order:2;}
+  .shot img{width:100%;border-radius:10px;border:1px solid var(--line);display:block;}
+  .app h3{font-size:22px;font-weight:800;}
+  .app h3 .en{font-family:var(--mono);font-size:13px;color:var(--sub);font-weight:400;margin-left:8px;}
+  .app .pos{font-size:14px;color:var(--accent);font-weight:700;margin:4px 0 10px;}
+  .app ul{list-style:none;margin-top:2px;}
+  .app li{font-size:15px;color:#3d4654;padding-left:20px;position:relative;line-height:2;}
+  .app li::before{content:"▸";position:absolute;left:2px;color:var(--accent);}
+  .app .links{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;}
+  .app .links a{font-size:13.5px;font-weight:600;border:1px solid var(--line);border-radius:8px;padding:5px 14px;background:#fff;}
+  .app .links a:hover{border-color:#c9d4e8;}
+
+  .prompt-card{font-family:var(--mono);font-size:14.5px;line-height:1.9;background:#0f1722;color:#dbe4f0;border-radius:12px;padding:20px 24px;margin-top:16px;white-space:pre-wrap;}
+  .prompt-card .who{color:#7fb0ff;font-weight:700;}
+  .prompt-note{font-size:14px;color:var(--sub);margin-top:10px;}
+
+  .dark{background:#0f1722;border-radius:16px;padding:26px 30px;margin-top:22px;display:flex;gap:34px;flex-wrap:wrap;}
+  .dark .fi{color:#c8d2e0;font-size:15px;line-height:1.8;flex:1;min-width:240px;}
+  .dark .fi b{color:#fff;display:block;font-size:16px;margin-bottom:4px;}
+  .dark .fi .m{font-family:var(--mono);font-size:12px;color:#7fb0ff;letter-spacing:1px;}
+
+  .repos{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px;}
+  .repo{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .repo .rn{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--ink);}
+  .repo .rd{font-size:14px;color:var(--sub);margin:8px 0 14px;}
+  .repo a{font-size:13.5px;font-weight:700;}
+
+  footer{margin-top:70px;border-top:1px solid var(--line);padding:30px 0 44px;text-align:center;color:var(--sub);font-size:14px;}
+  footer .logo{font-size:15px;color:var(--ink);}
+  @media(max-width:760px){
+    header h1{font-size:31px;}
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .app,.app:nth-child(even){grid-template-columns:1fr;}
+    .app:nth-child(even) .shot{order:0;}
+    .repos{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <div class="logo">开口<span>1024</span></div>
+  <a class="n" href="#pipeline">流水线</a>
+  <a class="n" href="#apps">三个应用</a>
+  <a class="n" href="#prompts">提示词</a>
+  <a class="n" href="#repos">仓库</a>
+  <div class="spacer"></div>
+  <span class="badge">MIT · OPEN SOURCE</span>
+</div></nav>
+
+<header class="wrap">
+  <h1>三个 AI 口语陪练，<em>一条数据流水线。</em></h1>
+  <div class="tagline">练普通话、练面试汇报、练诗词朗诵 —— <b>单文件网页应用，零依赖、零后端、录音不上传。</b></div>
+  <div class="ctas">
+    <a class="btn primary" href="#pipeline">看技术方案</a>
+    <a class="btn" href="#repos">GitHub 仓库</a>
+    <a class="btn" href="#apps">在线体验</a>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="v">3</div><div class="k">开源应用</div></div>
+    <div class="stat"><div class="v">6</div><div class="k">维评分引擎</div></div>
+    <div class="stat"><div class="v">1000</div><div class="k">首内置诗词</div></div>
+    <div class="stat"><div class="v">0</div><div class="k">依赖 · 单文件交付</div></div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section id="pipeline">
+  <div class="secno">01 / THE PIPELINE</div>
+  <h2>先看全局：<em>共用一条流水线</em></h2>
+  <p class="lead">三个应用表面是三个产品，底层是同一套引擎。从你开口说话开始，数据沿五步流动；上层由两段提示词驱动 AI 出题，底部由一条隐私基线兜住。</p>
+
+  <div class="panel">
+    <!-- 提示词链路 -->
+    <div style="font-family:var(--mono);font-size:12px;letter-spacing:2px;color:#8a8f99;margin-bottom:10px;">提示词双角色 · 练什么</div>
+    <svg viewBox="0 0 980 96" style="width:100%;display:block;" xmlns="http://www.w3.org/2000/svg">
+      <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#9aa3b2"/></marker></defs>
+      <rect x="0" y="14" width="270" height="68" rx="12" fill="#fff" stroke="#e8eaee"/>
+      <text x="20" y="42" font-size="15" font-weight="700" fill="#2563eb">场景选择</text>
+      <text x="20" y="66" font-size="12.5" fill="#5b6472">日常 / 面试 / 汇报 / 朝代·体裁·韵部</text>
+      <line x1="274" y1="48" x2="316" y2="48" stroke="#9aa3b2" stroke-width="1.6" marker-end="url(#ar)"/>
+      <rect x="322" y="14" width="350" height="68" rx="12" fill="#fff" stroke="#e8eaee"/>
+      <text x="342" y="42" font-size="15" font-weight="700" fill="#2563eb">出题助手 · LLM</text>
+      <text x="342" y="66" font-size="12.5" fill="#5b6472">「只输出 JSON 数组」· 离线题库兜底</text>
+      <line x1="676" y1="48" x2="718" y2="48" stroke="#9aa3b2" stroke-width="1.6" marker-end="url(#ar)"/>
+      <rect x="724" y="14" width="256" height="68" rx="12" fill="#fff" stroke="#e8eaee"/>
+      <text x="744" y="42" font-size="15" font-weight="700" fill="#2563eb">专属题库</text>
+      <text x="744" y="66" font-size="12.5" fill="#5b6472">题目 + 注音 + 韵脚标注</text>
+    </svg>
+
+    <div style="font-family:var(--mono);font-size:12px;letter-spacing:2px;color:#8a8f99;margin:22px 0 10px;">评分主链路 · 怎么说</div>
+    <svg viewBox="0 0 980 210" style="width:100%;display:block;" xmlns="http://www.w3.org/2000/svg">
+      <g font-family="-apple-system,'PingFang SC',sans-serif">
+        <rect x="0" y="30" width="168" height="150" rx="12" fill="#fff" stroke="#e8eaee"/>
+        <circle cx="22" cy="20" r="13" fill="#2563eb"/><text x="22" y="25" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">1</text>
+        <text x="42" y="26" font-size="16" font-weight="800" fill="#1a1a1a">开口说话</text>
+        <text x="16" y="66" font-size="12.5" fill="#3d4654">· 一个按钮按住就录</text>
+        <text x="16" y="92" font-size="12.5" fill="#3d4654">· 波形实时渲染</text>
+        <text x="16" y="118" font-size="12.5" fill="#3d4654">· 录音仅在内存中</text>
+
+        <line x1="172" y1="105" x2="210" y2="105" stroke="#9aa3b2" stroke-width="1.6" marker-end="url(#ar)"/>
+
+        <rect x="216" y="30" width="180" height="150" rx="12" fill="#fff" stroke="#e8eaee"/>
+        <circle cx="238" cy="20" r="13" fill="#2563eb"/><text x="238" y="25" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">2</text>
+        <text x="258" y="26" font-size="16" font-weight="800" fill="#1a1a1a">本地声学分析</text>
+        <text x="232" y="66" font-size="12.5" fill="#3d4654">· 音量 / 能量稳定性</text>
+        <text x="232" y="92" font-size="12.5" fill="#3d4654">· 静音检测 · 停顿统计</text>
+        <text x="232" y="118" font-size="12.5" fill="#3d4654">· 语速 · 时长 · 字数</text>
+        <text x="232" y="152" font-size="11.5" fill="#8a8f99">客观指标本地直出，不进大模型</text>
+
+        <line x1="400" y1="105" x2="438" y2="105" stroke="#9aa3b2" stroke-width="1.6" marker-end="url(#ar)"/>
+
+        <rect x="444" y="30" width="176" height="150" rx="12" fill="#fff" stroke="#e8eaee"/>
+        <circle cx="466" cy="20" r="13" fill="#2563eb"/><text x="466" y="25" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">3</text>
+        <text x="486" y="26" font-size="16" font-weight="800" fill="#1a1a1a">双通道转写</text>
+        <text x="460" y="66" font-size="12.5" fill="#3d4654">A：Web Speech API（优先）</text>
+        <text x="460" y="92" font-size="12.5" fill="#3d4654">B：讯飞实时转写（兜底）</text>
+        <text x="460" y="118" font-size="12.5" fill="#3d4654">· 自动降级，用户无感</text>
+        <text x="460" y="152" font-size="11.5" fill="#8a8f99">不支持时明确提示降级</text>
+
+        <line x1="624" y1="105" x2="662" y2="105" stroke="#9aa3b2" stroke-width="1.6" marker-end="url(#ar)"/>
+
+        <rect x="668" y="30" width="150" height="150" rx="12" fill="#fff" stroke="#e8eaee"/>
+        <circle cx="690" cy="20" r="13" fill="#2563eb"/><text x="690" y="25" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">4</text>
+        <text x="710" y="26" font-size="16" font-weight="800" fill="#1a1a1a">双模式评分</text>
+        <text x="684" y="66" font-size="12.5" fill="#3d4654">离线：声学规则六维分</text>
+        <text x="684" y="92" font-size="12.5" fill="#3d4654">AI：评测专家 · JSON</text>
+        <text x="684" y="118" font-size="12.5" fill="#3d4654">逐字比对：漏读标红</text>
+        <rect x="684" y="138" width="86" height="24" rx="12" fill="#fff8e6" stroke="#f2e2b3"/>
+        <text x="727" y="154" font-size="11.5" fill="#b45309" text-anchor="middle">精确练习法</text>
+
+        <line x1="822" y1="105" x2="860" y2="105" stroke="#9aa3b2" stroke-width="1.6" marker-end="url(#ar)"/>
+
+        <rect x="866" y="30" width="114" height="150" rx="12" fill="#fff" stroke="#e8eaee"/>
+        <circle cx="888" cy="20" r="13" fill="#2563eb"/><text x="888" y="25" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">5</text>
+        <text x="908" y="26" font-size="16" font-weight="800" fill="#1a1a1a">本地沉淀</text>
+        <text x="882" y="66" font-size="12.5" fill="#3d4654">· 进步曲线</text>
+        <text x="882" y="92" font-size="12.5" fill="#3d4654">· 连续打卡</text>
+        <text x="882" y="118" font-size="12.5" fill="#3d4654">· 成绩海报</text>
+        <text x="882" y="152" font-size="11.5" fill="#8a8f99">诗词版：匿名云榜</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<section id="apps">
+  <div class="secno">02–04 / THE APPS</div>
+  <h2>一个引擎，<em>三种练法</em></h2>
+  <p class="lead">六维评分在三个应用里同名不同义——「实」在开口练是扎实、在职场说话是成章、在诗词朗诵是完整。同一引擎，每个场景重新定义一遍评分语义。</p>
+
+  <div class="apps">
+    <div class="app">
+      <div class="shot"><img src="assets/coach-teleprompter.png" alt="开口练 提词器跟声高亮"></div>
+      <div>
+        <h3>开口练<span class="en">kaikoulian-ai-coach</span></h3>
+        <div class="pos">大而全 · AI 普通话口语陪练</div>
+        <ul>
+          <li>四场景一键出题：日常 / 演讲 / 朗诵 / 美文</li>
+          <li>提词器跟声高亮，高亮跟着朗读进度走</li>
+          <li>逐字比对：漏读标红、多读标绿，精确到字</li>
+          <li>进步曲线 + 连续打卡 + 成绩海报</li>
+        </ul>
+        <div class="links">
+          <a href="https://github.com/evcgs/kaikoulian-ai-coach">GitHub →</a>
+          <a href="https://kaikoulian-ai-coach.app.workbuddy.host/?sharecode=OMZ757XWFK">在线体验 →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="app">
+      <div class="shot"><img src="assets/coach-radar.png" alt="开口练 六维雷达"></div>
+      <div>
+        <h3>评分报告长这样<span class="en">六维画像</span></h3>
+        <div class="pos">稳 · 亮 · 活 · 实 · 感 · 韵</div>
+        <ul>
+          <li>说完 20 秒出分，雷达图一眼看到短板</li>
+          <li>每维都配一条能直接照做的练法</li>
+          <li>垫场词密度、停顿次数，全部来自本地声学统计</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="app">
+      <div class="shot"><img src="assets/workplace-report.png" alt="职场说话 评分报告"></div>
+      <div>
+        <h3>职场说话<span class="en">workplace-speech-coach</span></h3>
+        <div class="pos">窄而深 · AI 职场表达陪练</div>
+        <ul>
+          <li>面试问答（10/20 题）· 即兴表达 · 工作汇报</li>
+          <li>32 张话题卡 + 12 套汇报模板 + 20 道示范话术</li>
+          <li>三段式点评：做得好 / 怎么改 / 注意什么</li>
+          <li>综合分五档评级：卓越 ≥90 · 熟练 ≥75 · 合格 ≥60</li>
+        </ul>
+        <div class="links">
+          <a href="https://github.com/evcgs/workplace-speech-coach">GitHub →</a>
+          <a href="https://1024-workplace-speech.app.workbuddy.host/?sharecode=OLAOBELQIS">在线体验 →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="app">
+      <div class="shot"><img src="assets/poem-home.png" alt="诗词朗诵 水墨首页"></div>
+      <div>
+        <h3>诗词朗诵<span class="en">poem-recital</span></h3>
+        <div class="pos">垂直打穿 · AI 古诗词朗诵陪练</div>
+        <ul>
+          <li>1000 首唐诗宋词，朝代 / 体裁 / 韵部 / 关键词四维筛选</li>
+          <li>多音字注音 + 中华新韵 14 韵部韵脚检测</li>
+          <li>AI 精确练习法：直接告诉你重点练哪一句</li>
+          <li>古诗意象诗号匿名上榜，9 枚成就徽章</li>
+        </ul>
+        <div class="links">
+          <a href="https://github.com/evcgs/poem-recital">GitHub →</a>
+          <a href="https://poem-recital-47715.app.workbuddy.host/?sharecode=TN6DIXJJ7M">在线体验 →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="app">
+      <div class="shot"><img src="assets/poem-board.png" alt="诗词朗诵 匿名今日榜"></div>
+      <div>
+        <h3>匿名今日榜<span class="en">POEM BOARD</span></h3>
+        <div class="pos">每天同题，全员同诗</div>
+        <ul>
+          <li>随机诗号上榜：听雨闲客、采菊居士……</li>
+          <li>不收集昵称头像，匿名 ID 跨设备恢复成绩</li>
+          <li>每日一诗 + 周挑战：周二字音日 / 周三韵脚日</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="prompts">
+  <div class="secno">05 / PROMPTS</div>
+  <h2>两个角色，<em>全部强制 JSON</em></h2>
+  <p class="lead">每个应用里真正干活的提示词只有两条，在应用内均开放自定义，温度 0.3 压住发散性。</p>
+
+  <div class="prompt-card"><span class="who">[出题助手]</span>
+你是中文普通话口语出题助手，只输出 JSON 数组，
+不要任何其他文字或 markdown 代码块。</div>
+
+  <div class="prompt-card"><span class="who">[评测专家]</span>
+你是中文普通话口语评测专家，只输出 JSON。
+输入：转写文本 + 声学指标（时长/语速/停顿/字数）
+输出：六维分数 + 逐维点评 + 可执行的改进建议</div>
+
+  <p class="prompt-note">诗词版还会额外喂入：诗的原文、参考注音与韵脚标注；逐字比对先在本地完成，模型只负责生成「精确练习法」。</p>
+</section>
+
+<section id="privacy">
+  <div class="secno">06 / PRIVACY</div>
+  <h2>隐私基线：<em>录音不出本机</em></h2>
+  <div class="dark">
+    <div class="fi"><span class="m">RULE 01</span><b>录音不出本机</b>全程内存实时分析，不上传任何服务器</div>
+    <div class="fi"><span class="m">RULE 02</span><b>Key 仅存本机</b>API Key 存在你自己的浏览器里，仓库零密钥</div>
+    <div class="fi"><span class="m">RULE 03</span><b>请求直连</b>仅转写文本经 HTTPS 发往你自填的服务商，应用不设中间服务器</div>
+  </div>
+</section>
+
+<section id="repos">
+  <div class="secno">07 / REPOS</div>
+  <h2>克隆、打开、<em>今天就能开口练</em></h2>
+  <div class="repos">
+    <div class="repo"><div class="rn">kaikoulian-ai-coach</div><div class="rd">AI 普通话口语陪练 · 695KB 单文件</div><a href="https://github.com/evcgs/kaikoulian-ai-coach">github.com/evcgs/kaikoulian-ai-coach →</a></div>
+    <div class="repo"><div class="rn">workplace-speech-coach</div><div class="rd">AI 职场表达陪练 · 308KB 单文件</div><a href="https://github.com/evcgs/workplace-speech-coach">github.com/evcgs/workplace-speech-coach →</a></div>
+    <div class="repo"><div class="rn">poem-recital</div><div class="rd">AI 古诗词朗诵陪练 · 641KB 单文件</div><a href="https://github.com/evcgs/poem-recital">github.com/evcgs/poem-recital →</a></div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <div class="logo">开口<span style="color:var(--accent)">1024</span></div>
+  <div>三个开源的 AI 口语陪练 · 用 WorkBuddy 创作 · MIT License</div>
+</footer>
+
+</body>
+</html>
